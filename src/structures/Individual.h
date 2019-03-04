@@ -12,6 +12,11 @@ namespace genalg
              Individual(const Individual& individual);
             ~Individual();
 
+             double normalizedFitness();
+             double fitness();
+             const Chromosome& getChromosome();
+             void update();
+
         private:
 
             Chromosome chromosome;

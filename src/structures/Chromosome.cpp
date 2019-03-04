@@ -31,19 +31,23 @@ void Chromosome::crossover(const Chromosome& chromosome1, const Chromosome& chro
     // Full blocks to be copied
     if (block > 0)
     {
-        // TODO: copy
         // for?
-        // memcopy? -> exists?
+        // memcopy? -> exists? Yes
+        ulong* aux = new ulong[block];
+        memcpy((void*)aux, (const void*)chromosome1._genes, block*sizeof(ulong));
+        memcpy((void*)chromosome1._genes, (const void*) chromosome2._genes, block*sizeof (ulong));
+        memcpy((void*)chromosome2._genes, (const void*) aux, block*sizeof(ulong));
+        delete[] aux;
     }
 
     // Partial block to be copied
-    if (block < Chromosome::_chromosome_blocks and bit > 0)
+    if (block < Chromosome::_chromosome_blocks && bit > 0)
     {
         ulong aux = chromosome1._genes[block];  // copy for swap aid
-        ulong mask = 0b1 << (bit - 1);  // bit is the limit; not to be swapped
+        ulong mask = ~(0xFFFFFFFFFFFFFFFF << (bit - 1));  // bit is the limit; not to be swapped
 
-        chromosome1._genes[block] = chromosome1._genes[block] & ~mask | chromosome2._genes[block] & mask;
-        chromosome2._genes[block] = chromosome2._genes[block] & ~mask | aux & mask;
+        chromosome1._genes[block] = (chromosome1._genes[block] & ~mask) | (chromosome2._genes[block] & mask);
+        chromosome2._genes[block] = (chromosome2._genes[block] & ~mask) | (aux & mask);
     }
 }
 

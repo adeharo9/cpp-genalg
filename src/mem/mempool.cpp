@@ -21,7 +21,7 @@ mempool::~mempool()
 
 void* mempool::new_block()
 {
-
+    return nullptr;
 }
 
 void mempool::del_block(void* block)
