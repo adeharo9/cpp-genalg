@@ -35,3 +35,18 @@ void Population::add(const Individual &individual) {
 void Population::sort() {
     std::sort(_population.begin(), _population.end(), Individual::compareDesc);
 }
+
+void Population::normalizeFitness() {
+    double totalFitness = 0;
+
+    for (const Individual& individual : _population) {
+        totalFitness += individual.fitness();
+    }
+    for (Individual& individual : _population) {
+        individual.normalize(totalFitness);
+    }
+}
+
+const std::vector<Individual>& Population::individuals() const {
+    return _population;
+}

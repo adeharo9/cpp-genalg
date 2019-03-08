@@ -45,3 +45,7 @@ void Individual::operator=(const Individual &individual) {
 bool Individual::compareDesc(const Individual& first, const Individual& second) {
     return first.fitness() > second.fitness();
 }
+
+const Chromosome& Individual::getChromosome() const {
+    return chromosome;
+}
