@@ -15,10 +15,11 @@ namespace genalg
             ~Population();
 
              void initialize();
-             std::vector<Individual>& individuals();
+             const std::vector<Individual>& individuals() const;
              void exterminate();
              void add(const Individual& individual);
              void normalizeFitness();
+             void sort();
 
         private:
 

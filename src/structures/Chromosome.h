@@ -10,17 +10,16 @@ namespace genalg
             using ulong = unsigned long long;
 
         public:
-             //NOTE: I made it public to access it in GeneticAlgorithm
-             static uint  _chromosome_size;
 
              Chromosome(ulong* genes);
              Chromosome(const Chromosome& chromosome);
-             //FIXME: Temporal hack to be able to compile
-             Chromosome() {}
+             Chromosome();
             ~Chromosome();
 
-            static void crossover(const Chromosome& chromosome1, const Chromosome& chromosome2, const uint length);
-            static void mutation(const Chromosome& chromosome, const uint point);
+             void operator=(const Chromosome& chromosome);
+
+             static void crossover(const Chromosome& chromosome1, const Chromosome& chromosome2, const uint length);
+             static void mutation(const Chromosome& chromosome, const uint point);
 
         private:
 

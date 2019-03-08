@@ -1,4 +1,6 @@
 #include "GeneticAlgorithm.h"
+#include "../../include/parameters.h"
+#include <algorithm>
 
 using namespace genalg;
 
@@ -20,6 +22,7 @@ GeneticAlgorithm::~GeneticAlgorithm()
 void GeneticAlgorithm::run() {
     initialize();
     pickBest();
+    lastFitness = bestIndividual->fitness() + END_TOLERANCE+1;
 
     while (!finished())
     {
@@ -60,10 +63,10 @@ void GeneticAlgorithm::selection() {
 
 bool GeneticAlgorithm::crossover(const Chromosome& chromosome1, const Chromosome& chromosome2) {
     //TODO: Crossover probability
-    if ((rand()%1000) / 10000. > 0.5)
+    if ((rand()%1000) / 10000. > CROSSOVER_PROBABILITY)
         return false;
 
-    int crossoverLength = rand()%Chromosome::_chromosome_size;
+    int crossoverLength = rand()%CHROMOSOME_SIZE;
     Chromosome::crossover(chromosome1, chromosome2, crossoverLength);
     //TODO: Do we want to backtrack if the crossover does not generate solutions?
 
@@ -73,10 +76,10 @@ bool GeneticAlgorithm::crossover(const Chromosome& chromosome1, const Chromosome
 bool GeneticAlgorithm::mutation(const Chromosome &chromosome) {
     // Only mutate some of the times
     //TODO: Mutation probability
-    if ((rand()%1000) / 10000. > 0.05)
+    if ((rand()%1000) / 10000. > MUTATION_PROBABILITY)
         return false;
 
-    int mutationPoint = rand()%Chromosome::_chromosome_size;
+    int mutationPoint = rand()%CHROMOSOME_SIZE;
     Chromosome::mutation(chromosome, mutationPoint);
     //TODO: Do we want to backtrack if the mutation does not generate solutions?
 
@@ -144,7 +147,7 @@ void GeneticAlgorithm::recombineSelected() {
 
 void GeneticAlgorithm::pickBest() {
     population.normalizeFitness();
-    //TODO: sort in desc normalized fitness order
+    population.sort();
 
     if (bestIndividual != nullptr)
     {
@@ -158,8 +161,7 @@ void GeneticAlgorithm::updateControl() {
 }
 
 bool GeneticAlgorithm::finished() {
-    //FIXME: In the first iteration, lastFitness is undefined
     double tolerance = abs(bestIndividual->fitness() - lastFitness) / lastFitness;
     //FIXME: Finalization parameters
-    return numIterations >= 1 || tolerance <= 9999;
+    return numIterations >= MAX_NUM_ITERATIONS || tolerance < END_TOLERANCE;
 }

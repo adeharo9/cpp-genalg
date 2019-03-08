@@ -1,9 +1,14 @@
 #include "Chromosome.h"
+#include "../../include/parameters.h"
 
 #include <limits>
 #include <stdexcept>
 
 using namespace genalg;
+
+Chromosome::Chromosome() {
+    _genes = new ulong[CHROMOSOME_BLOCKS];
+}
 
 Chromosome::Chromosome(ulong* genes):
     _genes(genes)
@@ -13,20 +18,25 @@ Chromosome::Chromosome(ulong* genes):
 
 Chromosome::Chromosome(const Chromosome& chromosome)
 {
-
+    _genes = new ulong[CHROMOSOME_BLOCKS];
+    memcpy((void*)_genes, (const void*)chromosome._genes, CHROMOSOME_BLOCKS*sizeof(ulong));
 }
 
 Chromosome::~Chromosome()
 {
-    delete _genes;
+    delete[] _genes;
+}
+
+void Chromosome::operator=(const Chromosome &chromosome) {
+    memcpy((void*)_genes, (const void*)chromosome._genes, CHROMOSOME_BLOCKS*sizeof(ulong));
 }
 
 void Chromosome::crossover(const Chromosome& chromosome1, const Chromosome& chromosome2, const uint length)
 {
-    if (length > Chromosome::_chromosome_size ) { throw std::out_of_range(""); }
+    if (length > CHROMOSOME_SIZE ) { throw std::out_of_range(""); }
 
-    uint block = length / Chromosome::_block_size;
-    uint bit   = length % Chromosome::_block_size;
+    uint block = length / CHROMOSOME_BLOCKS;
+    uint bit   = length % CHROMOSOME_BLOCKS;
 
     // Full blocks to be copied
     if (block > 0)
@@ -41,7 +51,7 @@ void Chromosome::crossover(const Chromosome& chromosome1, const Chromosome& chro
     }
 
     // Partial block to be copied
-    if (block < Chromosome::_chromosome_blocks && bit > 0)
+    if (block < CHROMOSOME_BLOCKS && bit > 0)
     {
         ulong aux = chromosome1._genes[block];  // copy for swap aid
         ulong mask = ~(0xFFFFFFFFFFFFFFFF << (bit - 1));  // bit is the limit; not to be swapped
@@ -53,7 +63,7 @@ void Chromosome::crossover(const Chromosome& chromosome1, const Chromosome& chro
 
 void Chromosome::mutation(const Chromosome& chromosome, const uint point)
 {
-    if (point >= Chromosome::_chromosome_size ) { throw std::out_of_range(""); }
+    if (point >= CHROMOSOME_SIZE ) { throw std::out_of_range(""); }
 
     uint block = point / Chromosome::_block_size;
     uint bit   = point % Chromosome::_block_size;

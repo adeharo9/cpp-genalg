@@ -19,7 +19,7 @@ namespace genalg
 
             Population population;
             std::vector<Individual> selected;
-            Individual* bestIndividual;
+            const Individual* bestIndividual;
             double lastFitness;
             int numIterations;
 
